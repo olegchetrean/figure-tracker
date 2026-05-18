@@ -1,0 +1,43 @@
+# Secrets — NEVER commit
+.env
+.env.local
+.env.production
+*.key
+*.pem
+*credentials*
+youtube_cookies.txt
+
+# Databases (server-only)
+data/
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+*.egg-info/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Vercel
+.vercel/
+
+# Build outputs
+node_modules/
+dist/
+build/
+
+# Logs
+*.log
+logs/

@@ -1,0 +1,18 @@
+[Unit]
+Description=Figure AI Tracker — FastAPI + OCR Worker
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/opt/figure-tracker/backend
+EnvironmentFile=/opt/figure-tracker/.env
+ExecStart=/opt/figure-tracker/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000 --workers 1
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=figure-tracker
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure AI — Data Audit & Provenance</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:        #070708;
+    --surface:   #111114;
+    --surface-2: #16161a;
+    --border:    #1f1f24;
+    --border-2:  #2a2a30;
+    --red:       #e63030;
+    --green:     #2fcf75;
+    --yellow:    #f0c040;
+    --blue:      #5bb8f5;
+    --muted:     #585862;
+    --text:      #ececef;
+    --dim:       #888893;
+    --font-mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header ───────────────────────────────────────────────────────── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(7,7,8,0.94);
+    backdrop-filter: blur(14px);
+  }
+  .logo {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--dim); text-decoration: none;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 14px; border: 1px solid var(--border-2);
+    border-radius: 6px; transition: all 0.15s;
+  }
+  .back-link:hover {
+    color: var(--text); border-color: var(--red);
+    background: rgba(230,48,48,0.08);
+  }
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(230,48,48,0.12); border: 1px solid rgba(230,48,48,0.32);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+    color: var(--red); text-transform: uppercase;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--red);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.75); }
+  }
+  .header-right { display: flex; align-items: center; gap: 18px; }
+  .header-left  { display: flex; align-items: center; gap: 18px; }
+  .last-update { font-size: 11px; color: var(--dim); font-family: var(--font-mono); }
+
+  /* ── Layout ───────────────────────────────────────────────────────── */
+  main { max-width: 1440px; margin: 0 auto; padding: 28px 24px 64px; }
+  .section-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+  }
+  .section-title.with-margin { margin-top: 36px; }
+
+  /* ── Data Quality Banner ──────────────────────────────────────────── */
+  .quality-banner {
+    border-radius: 14px; padding: 28px 32px; margin-bottom: 32px;
+    border: 1px solid var(--border-2); position: relative; overflow: hidden;
+    background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);
+  }
+  .quality-banner.high   { border-color: rgba(47,207,117,0.35);
+    background: linear-gradient(135deg, rgba(47,207,117,0.07) 0%, rgba(47,207,117,0.01) 100%); }
+  .quality-banner.medium { border-color: rgba(240,192,64,0.35);
+    background: linear-gradient(135deg, rgba(240,192,64,0.06) 0%, rgba(240,192,64,0.01) 100%); }
+  .quality-banner.low    { border-color: rgba(230,48,48,0.4);
+    background: linear-gradient(135deg, rgba(230,48,48,0.07) 0%, rgba(230,48,48,0.01) 100%); }
+  .quality-question {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--dim); margin-bottom: 14px;
+  }
+  .quality-headline {
+    display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .quality-value {
+    font-family: var(--font-mono); font-size: 56px; font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1;
+  }
+  .quality-banner.high   .quality-value { color: var(--green); }
+  .quality-banner.medium .quality-value { color: var(--yellow); }
+  .quality-banner.low    .quality-value { color: var(--red); }
+  .quality-tag {
+    font-size: 14px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--dim);
+  }
+  .quality-meta {
+    display: flex; gap: 18px; flex-wrap: wrap;
+    font-size: 11px; color: var(--muted); margin-bottom: 18px;
+    text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;
+  }
+  .quality-meta .pill {
+    padding: 4px 12px; border-radius: 4px; background: rgba(255,255,255,0.05);
+  }
+  .warning-list {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 14px;
+  }
+  .warning-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border-radius: 20px;
+    background: rgba(240,192,64,0.10);
+    border: 1px solid rgba(240,192,64,0.28);
+    color: var(--yellow);
+    font-size: 12px; font-weight: 500;
+  }
+  .warning-pill::before {
+    content: '⚠'; font-size: 12px;
+  }
+
+  /* ── Source breakdown cards ───────────────────────────────────────── */
+  .sources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .source-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 22px 24px;
+    position: relative; overflow: hidden;
+  }
+  .source-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--accent, transparent);
+  }
+  .source-card.src-ocr        { --accent: var(--blue); }
+  .source-card.src-screenshot { --accent: var(--yellow); }
+  .source-card.src-research   { --accent: var(--muted); }
+  .source-card.src-manual     { --accent: var(--green); }
+  .source-card.src-unknown    { --accent: var(--red); }
+  .source-header {
+    display: flex; justify-content: space-between;
+    align-items: baseline; margin-bottom: 14px;
+  }
+  .source-name {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; padding: 3px 10px;
+    border-radius: 4px;
+  }
+  .source-name.src-ocr        { background: rgba(91,184,245,0.16);  color: var(--blue); }
+  .source-name.src-screenshot { background: rgba(240,192,64,0.16);  color: var(--yellow); }
+  .source-name.src-research   { background: rgba(136,136,136,0.16); color: #aaa; }
+  .source-name.src-manual     { background: rgba(47,207,117,0.16);  color: var(--green); }
+  .source-name.src-unknown    { background: rgba(230,48,48,0.16);   color: var(--red); }
+  .source-count {
+    font-family: var(--font-mono); font-size: 22px; font-weight: 700;
+    color: var(--text);
+  }
+  .source-row {
+    font-size: 12px; color: var(--dim);
+    font-family: var(--font-mono); margin-bottom: 6px;
+  }
+  .source-row .src-label {
+    display: inline-block; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--muted); width: 90px;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .weight-bar-wrap {
+    margin-top: 14px;
+  }
+  .weight-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--muted); margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;
+  }
+  .weight-bar-track {
+    height: 6px; background: rgba(255,255,255,0.05);
+    border-radius: 3px; overflow: hidden;
+  }
+  .weight-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: var(--accent, var(--red));
+    transition: width 0.6s ease;
+  }
+  .source-desc {
+    margin-top: 12px; font-size: 12px; color: var(--dim);
+    line-height: 1.6;
+  }
+
+  /* ── Coverage timeline chart ──────────────────────────────────────── */
+  .chart-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; margin-bottom: 28px;
+  }
+  .chart-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 20px;
+  }
+  .chart-wrap { position: relative; height: 180px; }
+  canvas { max-height: 180px; }
+  .coverage-gaps {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;
+  }
+  .gap-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(230,48,48,0.08); border: 1px solid rgba(230,48,48,0.22);
+    border-radius: 20px; padding: 4px 12px; font-size: 11.5px; color: var(--red);
+    font-family: var(--font-mono);
+  }
+
+  /* ── Drill-down cards ─────────────────────────────────────────────── */
+  .drilldown-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .drilldown-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px;
+    position: relative; overflow: hidden;
+  }
+  .drilldown-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--accent, transparent);
+  }
+  .drilldown-card.metric-peak     { --accent: var(--green); }
+  .drilldown-card.metric-low      { --accent: var(--red); }
+  .drilldown-card.metric-learning { --accent: var(--yellow); }
+  .drilldown-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px;
+  }
+  .drilldown-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700;
+  }
+  .drilldown-icon.peak     { background: rgba(47,207,117,0.16); color: var(--green); }
+  .drilldown-icon.low      { background: rgba(230,48,48,0.16);  color: var(--red); }
+  .drilldown-icon.learning { background: rgba(240,192,64,0.16); color: var(--yellow); }
+  .drilldown-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--dim);
+  }
+  .drilldown-value {
+    font-family: var(--font-mono); font-size: 32px; font-weight: 700;
+    color: var(--text); line-height: 1.1; margin-bottom: 4px;
+  }
+  .drilldown-context {
+    font-size: 12px; color: var(--dim); margin-bottom: 18px;
+    font-family: var(--font-mono);
+  }
+  .producer-list {
+    border-top: 1px solid var(--border);
+    padding-top: 14px; margin-bottom: 14px;
+  }
+  .producer-row {
+    display: grid;
+    grid-template-columns: 70px 1fr 1fr 80px;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(40,40,46,0.5);
+    font-size: 12px;
+    font-family: var(--font-mono);
+    align-items: center;
+  }
+  .producer-row:last-child { border-bottom: none; }
+  .producer-row .p-id {
+    color: var(--muted); font-weight: 700;
+  }
+  .producer-row .p-hours { color: var(--text); }
+  .producer-row .p-pkgs  { color: var(--text); }
+  .delta-math {
+    padding: 12px 14px; background: rgba(255,255,255,0.025);
+    border-radius: 8px; font-family: var(--font-mono);
+    font-size: 13px; color: var(--text);
+    border-left: 2px solid var(--accent, var(--border-2));
+    margin-bottom: 14px;
+  }
+  .delta-math .calc-arrow { color: var(--muted); }
+  .delta-math .calc-result { color: var(--text); font-weight: 700; }
+  .conf-bar-wrap { margin-bottom: 14px; }
+  .conf-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--muted); margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;
+  }
+  .conf-bar-track {
+    height: 6px; background: rgba(255,255,255,0.05);
+    border-radius: 3px; overflow: hidden;
+  }
+  .conf-bar-fill {
+    height: 100%; border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+  .conf-bar-fill.high   { background: var(--green); }
+  .conf-bar-fill.medium { background: var(--yellow); }
+  .conf-bar-fill.low    { background: var(--red); }
+  .notes-block {
+    padding: 12px 14px;
+    background: rgba(240,192,64,0.06);
+    border-left: 2px solid rgba(240,192,64,0.4);
+    border-radius: 8px;
+    font-size: 12.5px; color: #d2d2d8;
+    line-height: 1.6;
+  }
+  .notes-block::before {
+    content: 'NOTE'; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.18em; color: var(--yellow);
+    display: block; margin-bottom: 4px;
+  }
+
+  /* ── Influence log table ──────────────────────────────────────────── */
+  .table-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    margin-bottom: 28px;
+  }
+  .table-card-header {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--dim);
+  }
+  .table-card-header .table-meta {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.04em;
+    color: var(--muted); text-transform: none;
+    font-family: var(--font-mono);
+  }
+  .table-scroll {
+    max-height: 580px; overflow-y: auto; overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    padding: 10px 16px; text-align: left;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.01);
+    position: sticky; top: 0; z-index: 1;
+  }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: var(--text); }
+  td {
+    padding: 10px 16px; font-size: 13px;
+    border-bottom: 1px solid rgba(40,40,46,0.5);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.025); }
+  tr.influence-row {
+    border-left: 3px solid transparent;
+  }
+  tr.influence-row.significant td:first-child { border-left: 3px solid var(--red); }
+  tr.influence-row.significant.delta-up td:first-child { border-left: 3px solid var(--green); }
+  tr.influence-row.significant.delta-down td:first-child { border-left: 3px solid var(--red); }
+  .delta-pos { color: var(--green); }
+  .delta-neg { color: var(--red); }
+  .delta-neu { color: var(--dim); }
+  .metric-label {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px; color: var(--text);
+    background: rgba(255,255,255,0.04);
+    padding: 2px 8px; border-radius: 4px;
+    font-weight: 600; letter-spacing: 0.04em;
+  }
+  .arrow-cell { color: var(--muted); text-align: center; }
+  .empty-state {
+    padding: 32px 20px; text-align: center;
+    color: var(--dim); font-size: 13px;
+  }
+
+  /* ── Badges ───────────────────────────────────────────────────────── */
+  .badge {
+    padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    display: inline-block;
+  }
+  .badge-ocr        { background: rgba(91,184,245,0.16);  color: var(--blue); }
+  .badge-research   { background: rgba(136,136,136,0.16); color: #aaa; }
+  .badge-screenshot { background: rgba(240,192,64,0.16);  color: var(--yellow); }
+  .badge-manual     { background: rgba(47,207,117,0.16);  color: var(--green); }
+  .badge-unknown    { background: rgba(230,48,48,0.16);   color: var(--red); }
+  .severity-badge {
+    padding: 3px 10px; border-radius: 4px; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .severity-high   { background: rgba(230,48,48,0.16);  color: var(--red); }
+  .severity-medium { background: rgba(240,192,64,0.16); color: var(--yellow); }
+  .severity-low    { background: rgba(136,136,136,0.16); color: #aaa; }
+
+  /* ── Suspicious entries ───────────────────────────────────────────── */
+  .suspicious-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .suspicious-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 20px;
+    border-left: 3px solid var(--muted);
+  }
+  .suspicious-card.severity-high   { border-left-color: var(--red);
+    background: linear-gradient(90deg, rgba(230,48,48,0.04) 0%, var(--surface) 60%); }
+  .suspicious-card.severity-medium { border-left-color: var(--yellow);
+    background: linear-gradient(90deg, rgba(240,192,64,0.04) 0%, var(--surface) 60%); }
+  .suspicious-card.severity-low    { border-left-color: var(--muted); }
+  .suspicious-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; margin-bottom: 10px; flex-wrap: wrap;
+  }
+  .suspicious-id {
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--text); font-weight: 700;
+  }
+  .suspicious-id .susp-meta {
+    color: var(--dim); font-weight: 400; margin-left: 6px;
+  }
+  .suspicious-issue {
+    font-size: 13px; color: #d2d2d8; line-height: 1.55;
+  }
+
+  /* ── Placeholder / fallback ───────────────────────────────────────── */
+  .placeholder-card {
+    background: var(--surface); border: 1px dashed var(--border-2);
+    border-radius: 12px; padding: 28px 24px;
+    text-align: center; color: var(--dim);
+    margin-bottom: 16px;
+  }
+  .placeholder-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .placeholder-text {
+    font-size: 12px; color: var(--dim);
+    font-family: var(--font-mono);
+  }
+  .global-banner-offline {
+    border-radius: 14px; padding: 22px 28px; margin-bottom: 32px;
+    border: 1px dashed rgba(240,192,64,0.35);
+    background: rgba(240,192,64,0.04);
+    color: var(--yellow);
+    font-size: 13px;
+    display: none;
+  }
+  .global-banner-offline.visible { display: block; }
+  .global-banner-offline strong {
+    text-transform: uppercase; letter-spacing: 0.12em;
+    font-size: 11px; display: block; margin-bottom: 4px;
+  }
+
+  /* ── Responsive ───────────────────────────────────────────────────── */
+  @media (max-width: 720px) {
+    header { padding: 14px 16px; flex-wrap: wrap; gap: 10px; }
+    main   { padding: 16px 12px 40px; }
+    .quality-value { font-size: 38px; }
+    .drilldown-value { font-size: 24px; }
+    .producer-row { grid-template-columns: 60px 1fr 1fr 70px; gap: 6px; font-size: 11px; }
+    .chart-wrap { height: 140px; }
+    th, td { padding: 8px 10px; font-size: 11.5px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="logo">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <rect width="9" height="9" fill="#e63030"/>
+        <rect x="13" width="9" height="9" fill="#e63030" opacity=".5"/>
+        <rect y="13" width="9" height="9" fill="#e63030" opacity=".5"/>
+        <rect x="13" y="13" width="9" height="9" fill="#e63030" opacity=".25"/>
+      </svg>
+      Figure AI — Data Audit & Provenance
+    </div>
+  </div>
+  <div class="header-right">
+    <a class="back-link" href="/index.html">← Dashboard</a>
+    <span class="last-update" id="lastUpdate">Connecting…</span>
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── Offline banner (shown only when /api/audit unreachable) ─── -->
+  <div class="global-banner-offline" id="offlineBanner">
+    <strong>Audit endpoint not deployed yet</strong>
+    The <code>/api/audit</code> endpoint is not reachable. Showing placeholders for all sections.
+    Polling will continue every 30 seconds — the page will hydrate automatically once the API is live.
+  </div>
+
+  <!-- ── DATA QUALITY BANNER ─────────────────────────────────── -->
+  <div class="quality-banner medium" id="qualityBanner">
+    <div class="quality-question">Overall data quality</div>
+    <div class="quality-headline">
+      <div class="quality-value" id="qualityValue">—</div>
+      <div class="quality-tag" id="qualityTag">Awaiting data</div>
+    </div>
+    <div class="quality-meta" id="qualityMeta">
+      <span class="pill">Readings —</span>
+      <span class="pill">Hours covered —</span>
+      <span class="pill">Sources —</span>
+    </div>
+    <div class="warning-list" id="warningList"></div>
+  </div>
+
+  <!-- ── SOURCE BREAKDOWN ─────────────────────────────────────── -->
+  <p class="section-title">Data sources — who supplied what</p>
+  <div class="sources-grid" id="sourcesGrid">
+    <div class="placeholder-card">
+      <div class="placeholder-title">Awaiting /api/audit</div>
+      <div class="placeholder-text">Source breakdown will populate on first successful fetch.</div>
+    </div>
+  </div>
+
+  <!-- ── COVERAGE TIMELINE ────────────────────────────────────── -->
+  <p class="section-title">Coverage timeline — where data exists across stream</p>
+  <div class="chart-card">
+    <div class="chart-header">
+      <p class="section-title" style="margin:0">Reading density vs. stream hours</p>
+      <div id="gapsSummary" class="last-update">—</div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="coverageChart"></canvas>
+    </div>
+    <div class="coverage-gaps" id="coverageGaps"></div>
+  </div>
+
+  <!-- ── DRILL-DOWN CARDS ─────────────────────────────────────── -->
+  <p class="section-title">Drill-down — what produced each headline number</p>
+  <div class="drilldown-grid" id="drilldownGrid">
+    <div class="placeholder-card">
+      <div class="placeholder-title">Peak rate — provenance pending</div>
+      <div class="placeholder-text">Drill-down will appear once /api/audit responds.</div>
+    </div>
+    <div class="placeholder-card">
+      <div class="placeholder-title">Low rate — provenance pending</div>
+      <div class="placeholder-text">Drill-down will appear once /api/audit responds.</div>
+    </div>
+    <div class="placeholder-card">
+      <div class="placeholder-title">Learning Δ — provenance pending</div>
+      <div class="placeholder-text">Drill-down will appear once /api/audit responds.</div>
+    </div>
+  </div>
+
+  <!-- ── INFLUENCE LOG ────────────────────────────────────────── -->
+  <p class="section-title">Influence log — what each new reading changed</p>
+  <div class="table-card">
+    <div class="table-card-header">
+      <span>Per-metric deltas (newest first, max 50 rows)</span>
+      <span class="table-meta" id="influenceMeta">—</span>
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th class="sortable">Time</th>
+            <th class="sortable">Reading</th>
+            <th class="sortable">Stream h</th>
+            <th class="sortable">Source</th>
+            <th class="sortable">Metric</th>
+            <th>Before → After</th>
+            <th class="sortable">Δ</th>
+            <th class="sortable">%</th>
+          </tr>
+        </thead>
+        <tbody id="influenceBody">
+          <tr><td colspan="8" class="empty-state">Awaiting /api/audit…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SUSPICIOUS ENTRIES ───────────────────────────────────── -->
+  <p class="section-title with-margin">Suspicious entries — flagged for review</p>
+  <div class="suspicious-grid" id="suspiciousGrid">
+    <div class="placeholder-card">
+      <div class="placeholder-title">No flagged entries yet</div>
+      <div class="placeholder-text">Outlier detection runs against /api/audit data.</div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── State ────────────────────────────────────────────────────────────────────
+let coverageChart = null;
+const SOURCE_DESCRIPTIONS = {
+  ocr: 'Optical character recognition on live stream frames — high temporal density, machine-extracted.',
+  screenshot: 'Manually uploaded screenshots of the live counter — operator-verified but bursty.',
+  research: 'Third-party research benchmarks and report figures — sparse, low temporal resolution.',
+  manual: 'Manually entered data points — operator-confirmed, highest fidelity.',
+  unknown: 'Source provenance not classified.',
+};
+
+// ── Fetch loop ───────────────────────────────────────────────────────────────
+async function fetchAudit() {
+  try {
+    const res = await fetch('/api/audit');
+    if (res.status === 404 || !res.ok) {
+      handleOffline(res.status === 404 ? '404 — endpoint not deployed' : `HTTP ${res.status}`);
+      return;
+    }
+    const data = await res.json();
+    hideOffline();
+    renderAll(data);
+    document.getElementById('lastUpdate').textContent =
+      'Updated ' + new Date().toLocaleTimeString();
+  } catch (e) {
+    handleOffline('Network error — retrying');
+  }
+}
+
+function handleOffline(reason) {
+  document.getElementById('offlineBanner').classList.add('visible');
+  document.getElementById('lastUpdate').textContent = reason;
+}
+function hideOffline() {
+  document.getElementById('offlineBanner').classList.remove('visible');
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const fmt  = n => n != null && !Number.isNaN(n) ? Number(n).toLocaleString() : '—';
+const fmt1 = n => n != null && !Number.isNaN(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:1}) : '—';
+const fmt2 = n => n != null && !Number.isNaN(n) ? Number(n).toLocaleString(undefined,{maximumFractionDigits:2}) : '—';
+
+function pct(n) {
+  if (n == null || Number.isNaN(n)) return '—';
+  const sign = n > 0 ? '+' : '';
+  return `${sign}${Number(n).toFixed(2)}%`;
+}
+function deltaClass(d) {
+  if (d == null || d === 0) return 'delta-neu';
+  return d > 0 ? 'delta-pos' : 'delta-neg';
+}
+function srcClass(s) {
+  const known = ['ocr','screenshot','research','manual'];
+  return known.includes(s) ? s : 'unknown';
+}
+function srcBadge(s) {
+  const cls = srcClass(s);
+  return `<span class="badge badge-${cls}">${s || 'unknown'}</span>`;
+}
+function confidenceLabel(c) {
+  if (c == null) return { label: 'UNKNOWN', cls: 'medium' };
+  if (c >= 0.75) return { label: 'HIGH', cls: 'high' };
+  if (c >= 0.45) return { label: 'MEDIUM', cls: 'medium' };
+  return { label: 'LOW', cls: 'low' };
+}
+function tsShort(iso) {
+  if (!iso) return '—';
+  try {
+    const d = new Date(iso.endsWith('Z') ? iso : iso + 'Z');
+    return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  } catch (e) { return iso; }
+}
+
+// ── Master render ────────────────────────────────────────────────────────────
+function renderAll(data) {
+  renderQualityBanner(data.data_quality || {});
+  renderSources(data.data_quality?.by_source || []);
+  renderCoverageChart(data.data_quality || {}, data.recent_influence || []);
+  renderDrillDowns(data.drill_downs || {});
+  renderInfluence(data.recent_influence || []);
+  renderSuspicious(data.suspicious_entries || []);
+}
+
+// ── Quality Banner ───────────────────────────────────────────────────────────
+function renderQualityBanner(q) {
+  const banner = document.getElementById('qualityBanner');
+  const conf = q.overall_confidence;
+  const meta = confidenceLabel(conf);
+  banner.className = `quality-banner ${meta.cls}`;
+
+  const pctText = conf != null ? `${Math.round(conf * 100)}%` : '—';
+  document.getElementById('qualityValue').textContent = pctText;
+  document.getElementById('qualityTag').textContent = `— ${meta.label} CONFIDENCE`;
+
+  const totalReadings = q.total_readings ?? 0;
+  const sources = (q.by_source || []).length;
+  const hoursCovered = (q.by_source || []).reduce((acc, s) => {
+    if (s.first_hour != null && s.last_hour != null) {
+      return Math.max(acc, s.last_hour);
+    }
+    return acc;
+  }, 0);
+
+  document.getElementById('qualityMeta').innerHTML = `
+    <span class="pill">${totalReadings} readings</span>
+    <span class="pill">${fmt1(hoursCovered)}h stream covered</span>
+    <span class="pill">${sources} sources</span>
+  `;
+
+  const warnings = q.warnings || [];
+  const wEl = document.getElementById('warningList');
+  if (!warnings.length) {
+    wEl.innerHTML = '';
+  } else {
+    wEl.innerHTML = warnings.map(w => `<span class="warning-pill">${escapeHtml(w)}</span>`).join('');
+  }
+}
+
+// ── Sources grid ─────────────────────────────────────────────────────────────
+function renderSources(sources) {
+  const grid = document.getElementById('sourcesGrid');
+  if (!sources.length) {
+    grid.innerHTML = `
+      <div class="placeholder-card">
+        <div class="placeholder-title">No sources reported</div>
+        <div class="placeholder-text">/api/audit returned an empty by_source array.</div>
+      </div>`;
+    return;
+  }
+  grid.innerHTML = sources.map(s => {
+    const name = s.source || 'unknown';
+    const cls  = srcClass(name);
+    const weight = s.weight != null ? s.weight : (s.confidence != null ? s.confidence : 0);
+    const weightPct = Math.round(Math.min(1, Math.max(0, weight)) * 100);
+    const desc = s.description || SOURCE_DESCRIPTIONS[name] || SOURCE_DESCRIPTIONS.unknown;
+    const first = s.first_hour, last = s.last_hour;
+    const range = (first != null && last != null)
+      ? `${fmt1(first)}h → ${fmt1(last)}h`
+      : '—';
+
+    return `
+      <div class="source-card src-${cls}">
+        <div class="source-header">
+          <span class="source-name src-${cls}">${name}</span>
+          <span class="source-count">${fmt(s.count ?? s.reading_count ?? 0)}</span>
+        </div>
+        <div class="source-row"><span class="src-label">Readings</span> ${fmt(s.count ?? s.reading_count ?? 0)}</div>
+        <div class="source-row"><span class="src-label">Hours range</span> ${range}</div>
+        <div class="source-row"><span class="src-label">Span</span> ${(first != null && last != null) ? fmt1(last - first) + 'h' : '—'}</div>
+        <div class="weight-bar-wrap">
+          <div class="weight-bar-label">
+            <span>Weight</span>
+            <span>${weightPct}%</span>
+          </div>
+          <div class="weight-bar-track">
+            <div class="weight-bar-fill" style="width:${weightPct}%"></div>
+          </div>
+        </div>
+        <div class="source-desc">${escapeHtml(desc)}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── Coverage chart ───────────────────────────────────────────────────────────
+function renderCoverageChart(q, influence) {
+  const ctx = document.getElementById('coverageChart');
+  if (coverageChart) { coverageChart.destroy(); coverageChart = null; }
+
+  // Build scatter of stream_hours from influence log, color-coded per source
+  const bySrc = { ocr: [], screenshot: [], research: [], manual: [], unknown: [] };
+  influence.forEach(r => {
+    const cls = srcClass(r.source);
+    if (r.stream_hours != null) {
+      bySrc[cls].push({ x: r.stream_hours, y: 1 });
+    }
+  });
+
+  const colors = {
+    ocr: '#5bb8f5', screenshot: '#f0c040', research: '#888893',
+    manual: '#2fcf75', unknown: '#e63030',
+  };
+  const datasets = Object.entries(bySrc)
+    .filter(([_, pts]) => pts.length)
+    .map(([src, pts]) => ({
+      label: src,
+      data: pts,
+      backgroundColor: colors[src],
+      borderColor: colors[src],
+      pointRadius: 5,
+      pointHoverRadius: 7,
+      showLine: false,
+    }));
+
+  if (!datasets.length) {
+    ctx.getContext('2d').clearRect(0, 0, ctx.width, ctx.height);
+    document.getElementById('gapsSummary').textContent = 'No influence rows to plot';
+    document.getElementById('coverageGaps').innerHTML = '';
+    return;
+  }
+
+  const xs = datasets.flatMap(d => d.data.map(p => p.x));
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+
+  coverageChart = new Chart(ctx, {
+    type: 'scatter',
+    data: { datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'nearest', axis: 'x', intersect: false },
+      plugins: {
+        legend: { labels: { color: '#aaa', font: { size: 11 }, usePointStyle: true, padding: 16 } },
+        tooltip: {
+          backgroundColor: '#1a1a1f', borderColor: '#333', borderWidth: 1,
+          titleColor: '#ddd', bodyColor: '#bbb',
+          callbacks: {
+            label: p => ` ${p.dataset.label} @ ${p.parsed.x.toFixed(2)}h`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          min: Math.max(0, Math.floor(minX - 1)),
+          max: Math.ceil(maxX + 1),
+          title: { display: true, text: 'Stream hours', color: '#666', font: { size: 11 } },
+          ticks: { color: '#666', font: { size: 10 }, callback: v => v.toFixed(0) + 'h' },
+          grid: { color: 'rgba(255,255,255,0.03)' },
+        },
+        y: {
+          display: false,
+          min: 0, max: 2,
+        },
+      },
+    },
+  });
+
+  const gaps = q.coverage_gaps || [];
+  document.getElementById('gapsSummary').textContent =
+    gaps.length ? `${gaps.length} gap${gaps.length === 1 ? '' : 's'} detected` : 'No gaps';
+  document.getElementById('coverageGaps').innerHTML = gaps.map(g => {
+    const [a, b] = g;
+    return `<span class="gap-pill">${fmt1(a)}h → ${fmt1(b)}h · ${fmt1(b - a)}h void</span>`;
+  }).join('');
+}
+
+// ── Drill-downs ──────────────────────────────────────────────────────────────
+function renderDrillDowns(dd) {
+  const grid = document.getElementById('drilldownGrid');
+  if (!dd || (!dd.peak_rate && !dd.low_rate && !dd.learning_delta)) {
+    grid.innerHTML = `
+      <div class="placeholder-card">
+        <div class="placeholder-title">No drill-down data yet</div>
+        <div class="placeholder-text">/api/audit returned no drill_downs object.</div>
+      </div>`;
+    return;
+  }
+
+  const cards = [];
+  if (dd.peak_rate)     cards.push(drillCard('peak',     'Peak rate',     '↑', dd.peak_rate,     '/h'));
+  if (dd.low_rate)      cards.push(drillCard('low',      'Low rate',      '↓', dd.low_rate,      '/h'));
+  if (dd.learning_delta) cards.push(drillLearningCard(dd.learning_delta));
+
+  grid.innerHTML = cards.join('');
+}
+
+function drillCard(kind, label, icon, payload, unit) {
+  const conf = confidenceLabel(payload.confidence);
+  const producers = (payload.produced_by || []).map(p => `
+    <div class="producer-row">
+      <span class="p-id">#${p.reading_id ?? '?'}</span>
+      <span class="p-hours">${fmt2(p.stream_hours)}h</span>
+      <span class="p-pkgs">${fmt(p.packages)} pkgs</span>
+      <span>${srcBadge(p.source)}</span>
+    </div>`).join('');
+
+  const dPkgs = payload.delta_packages;
+  const dHrs  = payload.delta_hours;
+  const calc  = (dPkgs != null && dHrs != null && dHrs !== 0)
+    ? `${fmt(dPkgs)} pkgs <span class="calc-arrow">/</span> ${fmt2(dHrs)}h <span class="calc-arrow">=</span> <span class="calc-result">${fmt1(dPkgs / dHrs)}${unit}</span>`
+    : '<span class="delta-neu">No delta math available</span>';
+
+  return `
+    <div class="drilldown-card metric-${kind}">
+      <div class="drilldown-header">
+        <div class="drilldown-icon ${kind}">${icon}</div>
+        <div>
+          <div class="drilldown-label">${label}</div>
+        </div>
+      </div>
+      <div class="drilldown-value">${fmt1(payload.value)}${unit}</div>
+      <div class="drilldown-context">at ${fmt1(payload.at_stream_hour)}h stream</div>
+
+      <div class="producer-list">
+        <div class="section-title" style="margin-bottom:8px;font-size:9px">Produced by</div>
+        ${producers || '<div class="empty-state" style="padding:8px;text-align:left">No producer readings reported</div>'}
+      </div>
+
+      <div class="delta-math">${calc}</div>
+
+      <div class="conf-bar-wrap">
+        <div class="conf-bar-label">
+          <span>Confidence</span>
+          <span>${payload.confidence != null ? Math.round(payload.confidence * 100) + '% — ' + conf.label : '—'}</span>
+        </div>
+        <div class="conf-bar-track">
+          <div class="conf-bar-fill ${conf.cls}" style="width:${Math.round((payload.confidence || 0) * 100)}%"></div>
+        </div>
+      </div>
+
+      ${payload.notes ? `<div class="notes-block">${escapeHtml(payload.notes)}</div>` : ''}
+    </div>`;
+}
+
+function drillLearningCard(payload) {
+  const conf = confidenceLabel(payload.confidence);
+  const earlyList = (payload.early_readings || []).slice(0, 5).map(p => `
+    <div class="producer-row">
+      <span class="p-id">#${p.reading_id ?? '?'}</span>
+      <span class="p-hours">${fmt2(p.stream_hours)}h</span>
+      <span class="p-pkgs">${fmt(p.packages)} pkgs</span>
+      <span>${srcBadge(p.source)}</span>
+    </div>`).join('');
+  const recentList = (payload.recent_readings || []).slice(0, 5).map(p => `
+    <div class="producer-row">
+      <span class="p-id">#${p.reading_id ?? '?'}</span>
+      <span class="p-hours">${fmt2(p.stream_hours)}h</span>
+      <span class="p-pkgs">${fmt(p.packages)} pkgs</span>
+      <span>${srcBadge(p.source)}</span>
+    </div>`).join('');
+
+  const deltaPct = payload.delta_pct;
+  const deltaSign = deltaPct > 0 ? '+' : '';
+  const deltaCls = deltaPct > 0 ? 'delta-pos' : deltaPct < 0 ? 'delta-neg' : 'delta-neu';
+
+  return `
+    <div class="drilldown-card metric-learning">
+      <div class="drilldown-header">
+        <div class="drilldown-icon learning">Δ</div>
+        <div>
+          <div class="drilldown-label">Learning Δ</div>
+        </div>
+      </div>
+      <div class="drilldown-value ${deltaCls}">${deltaSign}${fmt1(deltaPct)}%</div>
+      <div class="drilldown-context">${fmt1(payload.early_rate)}/h early → ${fmt1(payload.recent_rate)}/h recent</div>
+
+      <div class="producer-list">
+        <div class="section-title" style="margin-bottom:8px;font-size:9px">Early third (first ${(payload.early_readings || []).length} readings)</div>
+        ${earlyList || '<div class="empty-state" style="padding:8px;text-align:left">—</div>'}
+      </div>
+      <div class="producer-list">
+        <div class="section-title" style="margin-bottom:8px;font-size:9px">Recent third (last ${(payload.recent_readings || []).length} readings)</div>
+        ${recentList || '<div class="empty-state" style="padding:8px;text-align:left">—</div>'}
+      </div>
+
+      <div class="delta-math">
+        ${fmt1(payload.early_rate)} <span class="calc-arrow">→</span>
+        ${fmt1(payload.recent_rate)} <span class="calc-arrow">=</span>
+        <span class="calc-result ${deltaCls}">${deltaSign}${fmt1(deltaPct)}%</span>
+      </div>
+
+      <div class="conf-bar-wrap">
+        <div class="conf-bar-label">
+          <span>Confidence</span>
+          <span>${payload.confidence != null ? Math.round(payload.confidence * 100) + '% — ' + conf.label : '—'}</span>
+        </div>
+        <div class="conf-bar-track">
+          <div class="conf-bar-fill ${conf.cls}" style="width:${Math.round((payload.confidence || 0) * 100)}%"></div>
+        </div>
+      </div>
+
+      ${payload.notes ? `<div class="notes-block">${escapeHtml(payload.notes)}</div>` : ''}
+    </div>`;
+}
+
+// ── Influence log table ──────────────────────────────────────────────────────
+function renderInfluence(influence) {
+  const tbody = document.getElementById('influenceBody');
+  if (!influence.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No recent readings reported</td></tr>`;
+    document.getElementById('influenceMeta').textContent = '0 changes';
+    return;
+  }
+
+  // Flatten: one row per (reading, metric change)
+  const rows = [];
+  influence.forEach(r => {
+    (r.changes || []).forEach(c => {
+      rows.push({
+        captured_at: r.captured_at,
+        reading_id:  r.reading_id,
+        stream_hours: r.stream_hours,
+        source:       r.source,
+        metric:       c.metric,
+        before:       c.before,
+        after:        c.after,
+        delta:        c.delta,
+        pct:          c.pct,
+        significant:  !!c.significant,
+      });
+    });
+  });
+
+  const totalChanges = rows.length;
+  const significantCount = rows.filter(r => r.significant).length;
+  const limit = 50;
+  const trimmed = rows.slice(0, limit);
+
+  document.getElementById('influenceMeta').textContent =
+    `${totalChanges} changes · ${significantCount} significant · showing ${trimmed.length}`;
+
+  tbody.innerHTML = trimmed.map(r => {
+    const dir = r.delta > 0 ? 'delta-up' : r.delta < 0 ? 'delta-down' : '';
+    const sigCls = r.significant ? `significant ${dir}` : '';
+    const dCls = deltaClass(r.delta);
+    const pCls = deltaClass(r.pct);
+    const deltaSign = r.delta > 0 ? '+' : '';
+    const pctSign   = r.pct  > 0 ? '+' : '';
+    return `
+      <tr class="influence-row ${sigCls}">
+        <td>${tsShort(r.captured_at)}</td>
+        <td>#${r.reading_id ?? '—'}</td>
+        <td>${fmt2(r.stream_hours)}h</td>
+        <td>${srcBadge(r.source)}</td>
+        <td><span class="metric-label">${escapeHtml(r.metric || '—')}</span></td>
+        <td>
+          <span class="delta-neu">${fmt2(r.before)}</span>
+          <span class="arrow-cell"> → </span>
+          <span>${fmt2(r.after)}</span>
+        </td>
+        <td class="${dCls}">${deltaSign}${fmt2(r.delta)}</td>
+        <td class="${pCls}">${pctSign}${fmt2(r.pct)}%</td>
+      </tr>`;
+  }).join('');
+}
+
+// ── Suspicious entries ───────────────────────────────────────────────────────
+function renderSuspicious(entries) {
+  const grid = document.getElementById('suspiciousGrid');
+  if (!entries.length) {
+    grid.innerHTML = `
+      <div class="placeholder-card" style="grid-column:1/-1">
+        <div class="placeholder-title">No suspicious entries</div>
+        <div class="placeholder-text">All readings passed sanity checks.</div>
+      </div>`;
+    return;
+  }
+  grid.innerHTML = entries.map(e => {
+    const sev = (e.severity || 'low').toLowerCase();
+    return `
+      <div class="suspicious-card severity-${sev}">
+        <div class="suspicious-header">
+          <div>
+            <span class="suspicious-id">#${e.reading_id ?? '?'}
+              <span class="susp-meta">at ${fmt2(e.stream_hours)}h · ${srcBadge(e.source)}</span>
+            </span>
+          </div>
+          <span class="severity-badge severity-${sev}">${sev}</span>
+        </div>
+        <div class="suspicious-issue">${escapeHtml(e.issue || 'No description')}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── Escape ───────────────────────────────────────────────────────────────────
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+fetchAudit();
+setInterval(fetchAudit, 30_000);
+</script>
+</body>
+</html>
