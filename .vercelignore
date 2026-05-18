@@ -1,0 +1,11 @@
+# Vercel ignores these — backend runs on OVH (long-lived OCR worker)
+backend/
+infra/
+deploy.sh
+requirements.txt
+*.py
+*.md
+data/
+youtube_cookies.txt
+.env
+.env.example
