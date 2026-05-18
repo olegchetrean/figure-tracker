@@ -3102,52 +3102,42 @@ function renderVersus(a) {
   if (!agi) return;
   const statusEl = document.getElementById('versusStatus');
 
+  // Shared rendering when there's a known challenge result (live or ended)
+  function _renderChallengeBody(ended, agoLabel) {
+    document.getElementById('versusActive').style.display = 'block';
+    document.getElementById('versusInactive').style.display = 'none';
+    document.getElementById('humanRate').textContent  = fmt1(agi.human_rate);
+    document.getElementById('robotRate').textContent  = fmt1(agi.robot_rate);
+    document.getElementById('humanDetail').textContent = `${fmt(agi.human_packages)} packages`;
+    document.getElementById('robotDetail').textContent = `${fmt(agi.robot_packages)} packages`;
+    const fillPct = Math.min(100, Math.max(0, (agi.robot_rate / agi.human_rate) * 100));
+    document.getElementById('agiFill').style.width = fillPct + '%';
+    document.getElementById('agiGap').textContent =
+      agi.robot_winning ? (ended ? 'ROBOT WON' : 'ROBOT WINNING')
+                        : `Robot ${agi.gap_percent.toFixed(1)}% behind`;
+    document.getElementById('agiStatus').innerHTML = ended
+      ? (agi.robot_winning
+          ? '<strong>Robot beat the human in that shift.</strong>'
+          : `Final gap: <strong>${agi.gap_percent.toFixed(1)}%</strong> behind human. Shift ended <strong>${agoLabel}</strong>; the live challenge overlay is no longer on screen.`)
+      : (agi.robot_winning
+          ? '<strong>Robot has surpassed human performance this shift.</strong>'
+          : `Robot needs <strong>+${agi.gap_percent.toFixed(1)}%</strong> more throughput to match the human.`);
+    document.getElementById('agiShiftCtx').textContent = ended
+      ? `Final cumulative over ${agi.shift_hours.toFixed(2)}h shift elapsed · split ended at stream ${agi.last_split_at_stream_hour.toFixed(1)}h`
+      : (agi.shift_hours != null ? `Cumulative packages over ${agi.shift_hours.toFixed(2)}h shift elapsed` : '');
+  }
+
   if (agi.active) {
     statusEl.textContent = 'CHALLENGE LIVE';
     statusEl.className = 'versus-status live';
+    _renderChallengeBody(false, null);
   } else if (agi.last_split_at_stream_hour != null) {
     const endedH = agi.challenge_ended_hours_ago || 0;
     const ago = endedH < 1 ? `${(endedH*60).toFixed(0)} min ago` :
                 endedH < 24 ? `${endedH.toFixed(1)}h ago` : `${(endedH/24).toFixed(1)}d ago`;
     statusEl.textContent = `LAST CHALLENGE · ENDED ${ago}`;
     statusEl.className = 'versus-status paused';
-    document.getElementById('versusActive').style.display = 'block';
-    document.getElementById('versusInactive').style.display = 'none';
-    document.getElementById('humanRate').textContent = fmt1(agi.human_rate);
-    document.getElementById('robotRate').textContent = fmt1(agi.robot_rate);
-    document.getElementById('humanDetail').textContent = `${fmt(agi.human_packages)} packages`;
-    document.getElementById('robotDetail').textContent = `${fmt(agi.robot_packages)} packages`;
-    const fill = Math.min(100, Math.max(0, (agi.robot_rate / agi.human_rate) * 100));
-    document.getElementById('agiFill').style.width = fill + '%';
-    document.getElementById('agiGap').textContent = agi.robot_winning ? 'ROBOT WON' : `Robot ${agi.gap_percent.toFixed(1)}% behind`;
-    document.getElementById('agiStatus').innerHTML = agi.robot_winning
-      ? '<strong>Robot beat the human in that shift.</strong>'
-      : `Final gap: <strong>${agi.gap_percent.toFixed(1)}%</strong> behind human. Last shift ended <strong>${ago}</strong>; the live challenge overlay is no longer on screen.`;
-    document.getElementById('agiShiftCtx').textContent =
-      `Final cumulative over ${agi.shift_hours.toFixed(2)}h shift elapsed · split ended at stream ${agi.last_split_at_stream_hour.toFixed(1)}h`;
-    return;
-    document.getElementById('versusActive').style.display = 'block';
-    document.getElementById('versusInactive').style.display = 'none';
-
-    document.getElementById('humanRate').textContent = fmt1(agi.human_rate);
-    document.getElementById('robotRate').textContent = fmt1(agi.robot_rate);
-    document.getElementById('humanDetail').textContent = `${fmt(agi.human_packages)} packages`;
-    document.getElementById('robotDetail').textContent = `${fmt(agi.robot_packages)} packages`;
-
-    const fill = Math.min(100, Math.max(0, (agi.robot_rate / agi.human_rate) * 100));
-    document.getElementById('agiFill').style.width = fill + '%';
-
-    document.getElementById('agiGap').textContent =
-      agi.robot_winning ? 'ROBOT WINNING' : `Robot ${agi.gap_percent.toFixed(1)}% behind`;
-    document.getElementById('agiStatus').innerHTML =
-      agi.robot_winning
-        ? '<strong>Robot has surpassed human performance this shift.</strong>'
-        : `Robot needs <strong>+${agi.gap_percent.toFixed(1)}%</strong> more throughput to match the human.`;
-
-    document.getElementById('agiShiftCtx').textContent =
-      agi.shift_hours != null
-        ? `Cumulative packages over ${agi.shift_hours.toFixed(2)}h shift elapsed`
-        : '';
+    _renderChallengeBody(true, ago);
   } else {
     statusEl.textContent = 'CHALLENGE IDLE';
     statusEl.className = 'versus-status paused';
