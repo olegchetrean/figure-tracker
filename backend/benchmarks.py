@@ -660,17 +660,19 @@ def get_achievements(readings: list[dict], analysis: dict | None = None) -> list
         if rb and rb not in seen_robots:
             seen_robots.add(rb)
             first_hour_per_robot[rb] = r["stream_hours"]
-    for robot in KNOWN_ROBOT_NAMES:
-        unlocked = robot in seen_robots
+    # Only emit "Meet X" achievements for robots WE'VE ACTUALLY OBSERVED.
+    # Don't invent placeholders for hypothetical robot names — if we've never
+    # seen GARY/JIM/ALICE, we don't show a "next: meet them" badge.
+    for robot in sorted(seen_robots):
         out.append({
             "id": f"meet_{robot.lower()}",
             "icon": "🤖",
             "title": f"Meet {robot}",
             "description": f"Robot {robot} (F.03) identified on the foreground chest sticker.",
             "tier": "silver",
-            "status": "unlocked" if unlocked else ("in_progress" if len(seen_robots) >= 1 else "locked"),
-            "progress_pct": 100.0 if unlocked else 0,
-            "current_value": 1 if unlocked else 0,
+            "status": "unlocked",
+            "progress_pct": 100.0,
+            "current_value": 1,
             "target_value": 1,
             "unlocked_at_stream_hour": first_hour_per_robot.get(robot),
         })
