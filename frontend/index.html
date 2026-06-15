@@ -7,8 +7,8 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="theme-color" content="#070708">
-<meta name="description" content="Live tracker for the Figure AI F.03 humanoid robot livestream — real-time package rate, robot identity, learning verdict.">
-<title>Figure AI — Live Performance Tracker</title>
+<meta name="description" content="Final retrospective report of the Figure AI F.03 humanoid robot livestream — 152.57h tracked between 13 May and 20 May 2026 UTC, 199,990 packages sorted, 2,548 OCR samples.">
+<title>Figure AI Tracker — Final Report · 13–20 May 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1488,36 +1488,171 @@
       <rect y="13" width="9" height="9" fill="#e63030" opacity=".5"/>
       <rect x="13" y="13" width="9" height="9" fill="#e63030" opacity=".25"/>
     </svg>
-    Figure AI — Live Performance Tracker
+    Figure AI — Final Performance Report
   </div>
   <div class="header-right">
     <a href="/audit.html" style="font-size:11px;text-decoration:none;color:var(--dim);
       padding:5px 12px;border:1px solid var(--border-2);border-radius:20px;
       letter-spacing:0.06em;font-weight:600;text-transform:uppercase;">Data Audit →</a>
-    <span class="live-tick" id="liveTick">polling 5s · OCR 60s</span>
-    <span class="last-update" id="lastUpdate">Connecting…</span>
-    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+    <span class="live-tick" id="liveTick">2,548 OCR samples · 152.57h stream</span>
+    <span class="last-update" id="lastUpdate">Last sample: 20 May 2026, 01:37 UTC</span>
+    <div class="live-badge" style="background:#2a2a30;color:#a8a8b3">ARCHIVED</div>
   </div>
 </header>
+
+<!-- ── ARCHIVE BANNER + CONTEXT + DATA QUALITY ───────────────── -->
+<div style="max-width:1400px;margin:0 auto 16px;padding:18px 24px;background:linear-gradient(180deg,#0f1a08 0%,#0a1206 100%);border:1px solid #2a3a18;border-radius:12px;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;align-items:start;">
+    <div>
+      <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#9bd45a;font-weight:700;margin-bottom:6px;">Final report — 200-hour stream concluded</div>
+      <div style="font-size:18px;color:#fff;font-weight:600;line-height:1.4;">Retrospective archive of <strong>Figure AI F.03</strong> humanoid robots sorting packages 24/7 at Catalyst Brands' Reno NV distribution center, May 2026.</div>
+      <div style="font-size:13px;color:#b8b8c2;margin-top:10px;line-height:1.55;">
+        <div>📅 <strong>Stream ran:</strong> ~13 May 2026 → 21–22 May 2026 (200 cumulative stream-hours, planned shutdown at hour 200 announced by CEO Brett Adcock).</div>
+        <div>📊 <strong>Official final tally:</strong> 249,560 packages sorted, zero hardware failures.</div>
+        <div>🤖 <strong>Robots on stream:</strong> Bob, Frank, Gary, Rose, Jim — F.03 platform running Helix 02 AI (VLA model).</div>
+      </div>
+    </div>
+    <div style="padding:14px;background:rgba(0,0,0,0.25);border-radius:10px;border:1px solid #1a2a14;">
+      <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#7ac8ff;font-weight:700;margin-bottom:6px;">⊙ This tracker's coverage</div>
+      <div style="font-size:13px;color:#d8d8e0;line-height:1.55;">
+        Independent fan-built OCR monitor (gpt-5.4-nano via LiteLLM). Captured frames from the YouTube embed every 60-120s.
+        <div style="margin-top:8px;">
+          <strong>Window:</strong> 2026-05-13 17:05 UTC → 2026-05-20 01:37 UTC<br>
+          <strong>Tracked:</strong> 152.57h of 200h ≈ <strong>76% of the stream</strong> (worker died at hour 152.6; final 47.5h unobserved here)<br>
+          <strong>Samples:</strong> 2,548 OCR readings · <strong>Last reading:</strong> 199,990 packages
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px;background:rgba(40,18,4,0.55);border-radius:10px;border:1px solid #3a2a10;">
+      <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#ff9550;font-weight:700;margin-bottom:6px;">⚠ Known data anomaly</div>
+      <div style="font-size:13px;color:#d8d8e0;line-height:1.55;">
+        In the <strong>final hour of tracking</strong> (stream_h 151.6 → 152.6, real time ~20 May 00:37–01:37 UTC) the vision OCR misread the package counter, inflating it by ~11,195. Apparent rate: <strong>11,544/h vs normal ~1,250/h</strong>.
+        <br><br>This contaminates every short-window calculation below (5m, 15m, 30m, 1h Pulse). Anything &gt; 1,400/h on this page should be discarded. Whole-stream average ≈ <strong>1,248/h</strong> (matches Figure's official 249,560 ÷ 200).
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STREAM TIMELINE — KEY MILESTONES (from press recaps) ── -->
+<div style="max-width:1400px;margin:0 auto 22px;padding:20px 24px;background:#0d0d11;border:1px solid #1f1f24;border-radius:12px;">
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;flex-wrap:wrap;gap:12px;">
+    <h3 style="margin:0;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;color:#e8e8ee;font-weight:700;">Stream timeline · official milestones</h3>
+    <div style="font-size:11px;color:#74747e;">From press recaps below · stream ran ~13 May → 21–22 May 2026</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">
+    <div style="padding:14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;">
+      <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#74747e;margin-bottom:4px;">Day 1 · ~24h</div>
+      <div style="font-size:18px;color:#fff;font-weight:700;">28,000</div>
+      <div style="font-size:11px;color:#a8a8b3;margin-top:2px;">packages · ~1,170/h</div>
+    </div>
+    <div style="padding:14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;">
+      <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#74747e;margin-bottom:4px;">Day 3 · ~72h</div>
+      <div style="font-size:18px;color:#fff;font-weight:700;">88,000</div>
+      <div style="font-size:11px;color:#a8a8b3;margin-top:2px;">packages · ~1,222/h</div>
+    </div>
+    <div style="padding:14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;">
+      <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#74747e;margin-bottom:4px;">Day ~3.4 · 81h</div>
+      <div style="font-size:18px;color:#fff;font-weight:700;">101,391</div>
+      <div style="font-size:11px;color:#a8a8b3;margin-top:2px;">packages · ~1,252/h</div>
+    </div>
+    <div style="padding:14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;">
+      <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#74747e;margin-bottom:4px;">Day 7 · 144h</div>
+      <div style="font-size:18px;color:#fff;font-weight:700;">179,000</div>
+      <div style="font-size:11px;color:#a8a8b3;margin-top:2px;">packages · ~1,243/h · YT title</div>
+    </div>
+    <div style="padding:14px;background:rgba(122,200,255,0.06);border:1px solid rgba(122,200,255,0.25);border-radius:8px;">
+      <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#7ac8ff;margin-bottom:4px;">⊙ Our tracker stopped · 152.57h</div>
+      <div style="font-size:18px;color:#fff;font-weight:700;">~188,795</div>
+      <div style="font-size:11px;color:#a8a8b3;margin-top:2px;">est. real (we read 199,990 — +11,195 OCR spike)</div>
+    </div>
+    <div style="padding:14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;">
+      <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#74747e;margin-bottom:4px;">Day 9 · 191h</div>
+      <div style="font-size:18px;color:#fff;font-weight:700;">238,000</div>
+      <div style="font-size:11px;color:#a8a8b3;margin-top:2px;">packages · ~1,246/h · YT title</div>
+    </div>
+    <div style="padding:14px;background:rgba(155,212,90,0.06);border:1px solid rgba(155,212,90,0.30);border-radius:8px;">
+      <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#9bd45a;margin-bottom:4px;">★ Final · 200h · 21–22 May</div>
+      <div style="font-size:18px;color:#fff;font-weight:700;">249,560</div>
+      <div style="font-size:11px;color:#a8a8b3;margin-top:2px;">packages · 1,247.8/h · zero failures</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PRESS COVERAGE GRID ──────────────────────────────────── -->
+<div style="max-width:1400px;margin:0 auto 22px;padding:20px 24px;background:#0d0d11;border:1px solid #1f1f24;border-radius:12px;">
+  <h3 style="margin:0 0 14px;font-size:14px;letter-spacing:0.12em;text-transform:uppercase;color:#e8e8ee;font-weight:700;">Press &amp; discussion · independent coverage</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;font-size:12.5px;">
+
+    <a href="https://www.figure.ai/news/figure-signs-agreement-with-catalyst-brands" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#9bd45a;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">★ Official · Figure AI · 26 May 2026</div>
+      <div style="font-weight:600;color:#fff;">Figure Signs Agreement with Catalyst Brands to Scale Humanoid Operations</div>
+    </a>
+    <a href="https://interestingengineering.com/ai-robotics/figure-03-humanoid-robot-200-hour-shift" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#7ac8ff;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Interesting Engineering</div>
+      <div style="font-weight:600;color:#fff;">F.03 humanoid robot's 200-hour shift recap</div>
+    </a>
+    <a href="https://sherwood.news/tech/figures-robots-just-sorted-packages-for-200-hours-straight/" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#7ac8ff;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Sherwood News</div>
+      <div style="font-weight:600;color:#fff;">Figure's robots just sorted packages for 200 hours straight</div>
+    </a>
+    <a href="https://www.humanoidsdaily.com/news/figure-ai-pops-champagne-as-autonomous-marathon-crosses-200-hours-without-hardware-failure" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#7ac8ff;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Humanoids Daily</div>
+      <div style="font-weight:600;color:#fff;">Figure AI pops champagne as autonomous marathon crosses 200 hours</div>
+    </a>
+    <a href="https://www.humanoidsdaily.com/news/man-vs-machine-figure-ai-intern-edges-out-humanoid-fleet-in-10-hour-sorting-challenge" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#ff9560;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Humanoids Daily · Challenge</div>
+      <div style="font-weight:600;color:#fff;">Man vs Machine: intern Aimé edges out humanoid fleet — 12,924 vs 12,732</div>
+    </a>
+    <a href="https://www.techradar.com/ai-platforms-assistants/figure-ai-streamed-humanoid-robots-sorting-packages-for-8-hours-straight-and-not-everyone-is-convinced-it-was-fully-real" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#74747e;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">TechRadar · skeptics</div>
+      <div style="font-weight:600;color:#fff;">8-hour straight livestream — and not everyone is convinced it was fully real</div>
+    </a>
+    <a href="https://en.sedaily.com/international/2026/05/26/figure-ais-humanoid-robot-works-200-hours-nonstop-sorting" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#7ac8ff;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Seoul Economic Daily</div>
+      <div style="font-weight:600;color:#fff;">Figure AI humanoid works 200 hours non-stop sorting (250k packages)</div>
+    </a>
+    <a href="https://oodaloop.com/briefs/technology/figure-ais-humanoid-robots-sort-88000-packages-in-72-hours-during-nonstop-livestream/" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#7ac8ff;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">OODA Loop · 72h checkpoint</div>
+      <div style="font-weight:600;color:#fff;">88,000 packages in 72 hours during nonstop livestream</div>
+    </a>
+    <a href="https://news.ycombinator.com/item?id=48125738" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#ff9560;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Hacker News · 14 May 2026</div>
+      <div style="font-weight:600;color:#fff;">"Figure humanoid robot package handling live stream"</div>
+    </a>
+    <a href="https://dnyuz.com/2026/05/15/silicon-valleys-latest-binge-watch-is-a-humanoid-warehouse-worker/" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#74747e;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">DNYUZ · 15 May 2026</div>
+      <div style="font-weight:600;color:#fff;">Silicon Valley's latest binge-watch is a humanoid warehouse worker</div>
+    </a>
+    <a href="https://x.com/adcock_brett" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#9bd45a;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">★ CEO Brett Adcock on X</div>
+      <div style="font-weight:600;color:#fff;">Daily updates &amp; the "200-hour shutdown" announcement</div>
+    </a>
+    <a href="https://www.youtube.com/@figureai" target="_blank" rel="noopener" style="padding:12px 14px;background:#111114;border:1px solid #1f1f24;border-radius:8px;text-decoration:none;color:#d8d8e0;">
+      <div style="font-size:10px;color:#7ac8ff;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">YouTube · official channel</div>
+      <div style="font-weight:600;color:#fff;">@figureai — all Figure AI streams &amp; videos</div>
+    </a>
+  </div>
+</div>
 
 <main>
 
   <!-- ── HERO: YouTube + Live status ─────────────────────────── -->
   <div class="hero-row">
     <div class="yt-card">
-      <iframe src="https://www.youtube.com/embed/luU57hMhkak?autoplay=1&mute=1&playsinline=1"
-              title="Figure AI Livestream"
-              allow="autoplay; encrypted-media; picture-in-picture"
+      <iframe src="https://www.youtube.com/embed/luU57hMhkak?playsinline=1&rel=0"
+              title="Figure AI Livestream — archived video"
+              allow="encrypted-media; picture-in-picture"
               allowfullscreen></iframe>
-      <!-- No overlay. The 4 corners of the original video are already occupied
-           by Figure's native overlay (F logo, LIVE, HRS.MIN.SEC, PACKAGES).
-           All our data lives in the side card and the panels below. -->
+      <div style="position:absolute;bottom:8px;left:8px;right:8px;padding:8px 12px;background:rgba(0,0,0,0.78);backdrop-filter:blur(6px);border-radius:8px;font-size:11px;color:#c8c8d0;display:flex;justify-content:space-between;align-items:center;gap:12px;pointer-events:none;">
+        <span><strong style="color:#fff">Original tracked stream</strong> · ID <code style="background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;font-size:10px;">luU57hMhkak</code> · ended 20 May 2026</span>
+        <a href="https://www.youtube.com/@FigureAI/streams" target="_blank" rel="noopener" style="color:#7ac8ff;text-decoration:none;font-weight:600;pointer-events:auto;">All Figure AI streams →</a>
+      </div>
     </div>
     <div class="live-strip ls-story" id="liveStrip">
-      <div class="ls-question">Right now on the livestream</div>
+      <div class="ls-question">Snapshot at stream end · 20 May 2026, 01:37 UTC</div>
 
       <div class="ls-block" id="lsBlockRobot">
-        <div class="ls-block-label">Active robot</div>
+        <div class="ls-block-label">Last active robot</div>
         <div>
           <span class="ls-robot-name" id="lsRobotName">—</span>
           <span class="ls-robot-model" id="lsRobotModel"></span>
@@ -1526,29 +1661,32 @@
       </div>
 
       <div class="ls-block" id="lsBlockRun">
-        <div class="ls-block-label">This run vs lifetime avg</div>
-        <div><span class="ls-run-rate" id="lsRunRate">—</span> <span style="font-size:11px;color:var(--muted)">this run</span></div>
+        <div class="ls-block-label">Final hour vs 152.57h average</div>
+        <div><span class="ls-run-rate" id="lsRunRate">—</span> <span style="font-size:11px;color:var(--muted)">final hour (⚠ OCR-contaminated)</span></div>
         <div style="margin-top:6px;font-size:12px" id="lsRunVsAvg">—</div>
       </div>
 
       <div class="ls-block" id="lsBlockEvent">
-        <div class="ls-block-label">Latest observation</div>
-        <div id="lsEventBody" style="font-size:12.5px;color:var(--dim)">no events yet</div>
+        <div class="ls-block-label">Final observation (20 May 01:37 UTC)</div>
+        <div id="lsEventBody" style="font-size:12.5px;color:var(--dim)">no events recorded</div>
       </div>
     </div>
   </div>
 
-  <!-- ── PERFORMANCE PULSE (above-fold rising/falling indicator) ── -->
+  <!-- ── PERFORMANCE PULSE (final-hour windows — CONTAMINATED by OCR spike) ── -->
   <div class="pulse-card stable" id="pulseCard">
+    <div style="padding:10px 14px;margin:-2px 0 12px;background:rgba(255,90,40,0.08);border:1px solid rgba(255,140,80,0.35);border-radius:8px;font-size:12px;color:#ffb088;line-height:1.5;">
+      <strong style="color:#ff9560">⚠ Final-hour OCR artifact.</strong> The numbers below extrapolate from the broken last hour (199,990 packages, +11,195 jump). Sane rate for the rest of the stream: <strong style="color:#fff">1,150–1,260 pach/h</strong>. Anything &gt;1,400/h here is noise, not signal.
+    </div>
     <div class="pulse-head">
       <div class="pulse-arrow" id="pulseArrow">→</div>
       <div class="pulse-headline">
-        <div class="pulse-question">Throughput trend right now</div>
+        <div class="pulse-question">Throughput in the final hour of stream (~20 May 00:37–01:37 UTC)</div>
         <div class="pulse-verdict" id="pulseVerdict">Analyzing…</div>
       </div>
       <div class="pulse-rate">
         <div class="v" id="pulseRate">—</div>
-        <div class="l" id="pulseRateLabel">live pach/h</div>
+        <div class="l" id="pulseRateLabel">final pach/h</div>
       </div>
     </div>
     <div class="pulse-windows" id="pulseWindows"></div>
@@ -1557,7 +1695,7 @@
 
   <!-- ── MASTER CONCLUSION ────────────────────────────────────── -->
   <div class="master-card" id="masterCard">
-    <div class="master-question">Synthesis of all monitoring so far</div>
+    <div class="master-question">Synthesis of the full 13–20 May 2026 tracking window</div>
     <div class="master-headline" id="masterHeadline">Computing…</div>
     <div class="master-paras" id="masterParas"></div>
     <div class="master-grid">
@@ -1570,7 +1708,7 @@
         <ul id="masterDontKnow"></ul>
       </div>
       <div class="master-list next">
-        <h4>Watch next</h4>
+        <h4>Open questions (post-stream)</h4>
         <ul id="masterWatch"></ul>
       </div>
     </div>
@@ -1578,7 +1716,7 @@
 
   <!-- ── VERDICT ──────────────────────────────────────────────── -->
   <div class="verdict-card" id="verdictCard">
-    <div class="verdict-question">Is the Figure F.03 robot getting better?</div>
+    <div class="verdict-question">Did the Figure F.03 robot improve over the 13–20 May 2026 stream?</div>
     <div class="verdict-title" id="verdictTitle">Analyzing…</div>
     <div class="verdict-summary" id="verdictSummary"></div>
     <div class="verdict-meta" id="verdictMeta"></div>
@@ -1586,25 +1724,25 @@
   </div>
 
   <!-- ── Hero Stats ───────────────────────────────────────────── -->
-  <p class="section-title">Current Status</p>
+  <p class="section-title">Final status at stream end (20 May 2026, 01:37 UTC)</p>
   <div class="hero-grid">
     <div class="stat-card accent-red">
-      <div class="stat-label">Packages Sorted</div>
+      <div class="stat-label">Total Packages Sorted</div>
       <div class="stat-value big" id="statPackages">—</div>
       <div class="stat-sub" id="statStream">Stream: —</div>
     </div>
     <div class="stat-card accent-blue">
-      <div class="stat-label">Current Rate (1h)</div>
+      <div class="stat-label">Final Hour Rate (⚠ OCR)</div>
       <div class="stat-value" id="stat1h">—</div>
-      <div class="stat-sub" id="statRateContext">packages / hour</div>
+      <div class="stat-sub" id="statRateContext">contaminated — see banner above</div>
     </div>
     <div class="stat-card accent-green">
       <div class="stat-label">Overall Average</div>
       <div class="stat-value" id="statOverall">—</div>
-      <div class="stat-sub">pach/h across whole stream</div>
+      <div class="stat-sub">pach/h across 152.57h of stream</div>
     </div>
     <div class="stat-card accent-yellow">
-      <div class="stat-label">Learning Trend</div>
+      <div class="stat-label">Learning Trend (whole stream)</div>
       <div class="stat-value" id="statTrendValue" style="font-size:18px;padding-top:6px">—</div>
       <div class="stat-sub" id="statTrendSlope">—</div>
     </div>
@@ -1651,7 +1789,7 @@
   <!-- ── Rolling windows + Daily breakdown ────────────────────── -->
   <div class="two-col">
     <div class="table-card">
-      <div class="table-card-header">Rolling Windows (from now back)</div>
+      <div class="table-card-header">Rolling Windows · backwards from stream end (⚠ short windows contaminated by final-hour OCR spike)</div>
       <table>
         <thead>
           <tr><th>Window</th><th>Rate (pach/h)</th><th>vs Overall</th></tr>
@@ -1693,8 +1831,8 @@
     <div style="color:var(--muted);padding:14px;font-size:12px">Loading achievements…</div>
   </div>
 
-  <!-- ── PACKAGE MIX ──────────────────────────────────────────── -->
-  <p class="section-title">Package Mix Live (what's being sorted)</p>
+  <!-- ── PACKAGE MIX (final observation) ─────────────────────── -->
+  <p class="section-title">Package Mix · final observation (20 May 2026)</p>
   <div class="pkg-card" id="pkgCard">
     <div id="pkgSub" style="font-size:12px;color:var(--dim);margin-bottom:14px">Loading package observations…</div>
     <div class="pkg-row">
@@ -1716,8 +1854,8 @@
     </div>
   </div>
 
-  <!-- ── LIVE EVENT FEED (Tier-2 Vision) ──────────────────────── -->
-  <p class="section-title">Live Event Feed — Rich semantic observations</p>
+  <!-- ── EVENT FEED (semantic observations, last 30 events before shutdown) ── -->
+  <p class="section-title">Event Feed · last 30 semantic observations (final hours, 21–22 May 2026)</p>
   <div class="events-card">
     <div class="events-summary" id="eventsSummary">
       <div class="pair"><span class="v">—</span><span class="l">Observations</span></div>
@@ -1731,8 +1869,8 @@
     </div>
   </div>
 
-  <!-- ── ROBOT ERRORS ─────────────────────────────────────────── -->
-  <p class="section-title">Robot Errors Observed</p>
+  <!-- ── ROBOT ERRORS observed during 13–20 May 2026 ─────────── -->
+  <p class="section-title">Robot Errors Observed (13–20 May 2026)</p>
   <div class="err-card">
     <div class="err-summary" id="errSummary">
       <div class="err-stat"><div class="v">—</div><div class="l">Total observed</div></div>
@@ -1745,8 +1883,8 @@
     </div>
   </div>
 
-  <!-- ── EXTERNAL SIGNALS / NEWS FEED ─────────────────────────── -->
-  <p class="section-title">External Signals — News &amp; Discussion</p>
+  <!-- ── EXTERNAL SIGNALS / NEWS FEED (during tracking period) ── -->
+  <p class="section-title">External Signals — News &amp; Discussion (during 13–20 May 2026)</p>
   <div class="news-card">
     <div id="newsSummary" style="font-size:12px;color:var(--dim);margin-bottom:12px">—</div>
     <div class="news-feed" id="newsFeed">
@@ -1754,8 +1892,8 @@
     </div>
   </div>
 
-  <!-- ── COST PANEL ───────────────────────────────────────────── -->
-  <p class="section-title">OCR Cost Tracking</p>
+  <!-- ── COST PANEL (final OCR spend, key now deleted) ──────── -->
+  <p class="section-title">OCR Cost · final spend across tracking window</p>
   <div class="news-card" style="margin-bottom:32px">
     <div class="cost-row" id="costRow">
       <div class="cost-tile"><div class="l">Today</div><div class="v" id="costToday">—</div><div class="s" id="costTodayCalls">—</div></div>
@@ -1828,7 +1966,7 @@
   <p class="section-title">Human vs Robot — F.03 Challenge</p>
   <div class="versus-card">
     <div class="versus-header">
-      <div class="versus-title">Challenge Performance</div>
+      <div class="versus-title">Challenge Performance (final-observed shift)</div>
       <span class="versus-status" id="versusStatus">—</span>
     </div>
 
@@ -1862,20 +2000,31 @@
     </div>
 
     <div id="versusInactive">
-      <p style="color:var(--dim);font-size:13px;margin-bottom:18px">
-        Split-screen challenge not currently active. Showing robot's most recent solo rate vs research baseline.
+      <div style="padding:14px;background:rgba(155,212,90,0.06);border:1px solid rgba(155,212,90,0.30);border-radius:10px;margin-bottom:18px;">
+        <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#9bd45a;font-weight:700;margin-bottom:6px;">★ Actual 10-hour challenge — final score (humanoidsdaily.com)</div>
+        <div style="font-size:14px;color:#fff;line-height:1.55;">
+          <strong>Aimé Gérard (Figure intern, human):</strong> 12,924 packages · ~1,292/h<br>
+          <strong>F.03 robot fleet (Bob/Frank/Gary/Rose/Jim, rotating):</strong> 12,732 packages · ~1,273/h<br>
+          <strong>Margin:</strong> Aimé won by <strong>192 packages (≈1.5%)</strong>. F.03 led briefly at hour ~5 when Aimé took a bathroom break, but Aimé retook the lead and held it to the bell. Aimé reported blistered fingers and a forearm that felt "basically broken."
+        </div>
+        <div style="font-size:12px;color:#a8a8b3;margin-top:10px;font-style:italic;line-height:1.5;">
+          Brett Adcock (CEO) after the match: <strong style="color:#fff">"This is the last time a human will ever win."</strong>
+        </div>
+      </div>
+      <p style="color:var(--dim);font-size:12px;margin-bottom:14px;line-height:1.5">
+        ⚠ The numbers below were the dashboard's *previous* live framing. They compare a hardcoded "1,431/h human baseline" — which does not match published industry data. Real sort-to-destination throughput for an Amazon-class worker is <strong>60–400 pkg/h</strong> (peak); 1,000+/h numbers in industry literature are *single-station induct feeds*, not full sort-to-bin. By that honest benchmark, F.03 sustained 1,248/h was already <strong>3-20× a typical human sorter</strong> — Aimé's 1,292/h was an outlier peak-induct performance, not a normal human baseline. <a href="https://primevision.com/from-sorting-60-parcels-per-hour-to-sorting-300-parcels-per-hour/" target="_blank" rel="noopener" style="color:#7ac8ff">Prime Vision case study</a>
       </p>
       <div class="versus-grid">
         <div class="versus-side">
-          <div class="versus-name">Human Baseline</div>
+          <div class="versus-name">"Human Baseline" (legacy figure)</div>
           <div class="versus-rate human" id="humanBaseline">1,431</div>
-          <div class="versus-label">research benchmark</div>
+          <div class="versus-label" style="color:#ff9560">unsourced — see note above</div>
         </div>
         <div class="vs-divider">VS</div>
         <div class="versus-side">
-          <div class="versus-name">Robot (last 1h)</div>
+          <div class="versus-name">Robot (final hour ⚠ OCR-spiked)</div>
           <div class="versus-rate robot" id="robotBaseline">—</div>
-          <div class="versus-label">live rate</div>
+          <div class="versus-label">contaminated — real sustained rate was ~1,150–1,260/h</div>
         </div>
       </div>
       <div class="agi-bar">
@@ -1897,16 +2046,16 @@
     <div id="dockEvents" style="color:var(--dim);font-size:13px">No dock events detected yet.</div>
   </div>
 
-  <!-- ── AI Analyst ───────────────────────────────────────────── -->
+  <!-- ── AI Analyst (frozen) ──────────────────────────────────── -->
   <div class="ai-card">
     <div class="ai-header">
       <div class="ai-icon">AI</div>
       <div>
-        <div class="ai-title">AI Analyst — gpt-5.4-nano</div>
-        <div class="ai-subtitle">Updated hourly · automated insight via LiteLLM gateway</div>
+        <div class="ai-title">AI Analyst — gpt-5.4-nano (frozen)</div>
+        <div class="ai-subtitle">Hourly automated summaries via the LiteLLM gateway · stopped 20 May 2026, API key revoked 15 June 2026.</div>
       </div>
     </div>
-    <div class="ai-report-text" id="aiReport">Loading analysis…</div>
+    <div class="ai-report-text" id="aiReport">Loading frozen analysis…</div>
     <div class="ai-updated" id="aiUpdated"></div>
   </div>
 
@@ -2178,16 +2327,26 @@ function renderPulse(a) {
   arrow.textContent = ({rising:'↑', falling:'↓', stable:'→', mixed:'⇅', insufficient:'·'})[dir] || '·';
 
   const meanDelta = p.mean_delta_pct;
-  const sign = meanDelta == null ? '' : (meanDelta >= 0 ? '+' : '');
-  const delta = meanDelta == null ? '' : `  ${sign}${meanDelta.toFixed(1)}%`;
-  const verdictText = {
-    rising:       `RISING${delta} vs baseline`,
-    falling:      `FALLING${delta} vs baseline`,
-    stable:       `STABLE${delta} vs baseline`,
-    mixed:        `MIXED — windows disagree`,
-    insufficient: `INSUFFICIENT DATA`,
-  };
-  verdict.textContent = verdictText[dir] || 'INSUFFICIENT DATA';
+  const overall   = p.overall_baseline_rate || a.overall_rate || 1310;
+  // Final-hour OCR spike contaminates every window — override the "RISING +1112%" verdict
+  const contaminatedHeadline = (meanDelta != null && Math.abs(meanDelta) > 200)
+                            || (p.current_rate != null && p.current_rate > overall * 1.5);
+  if (contaminatedHeadline) {
+    arrow.textContent = '⚠';
+    verdict.textContent = `OCR-contaminated final hour — see warning above`;
+    card.className = 'pulse-card mixed';
+  } else {
+    const sign = meanDelta == null ? '' : (meanDelta >= 0 ? '+' : '');
+    const delta = meanDelta == null ? '' : `  ${sign}${meanDelta.toFixed(1)}%`;
+    const verdictText = {
+      rising:       `RISING${delta} vs whole-stream baseline (${fmt1(overall)}/h)`,
+      falling:      `FALLING${delta} vs whole-stream baseline (${fmt1(overall)}/h)`,
+      stable:       `STABLE${delta} vs whole-stream baseline (${fmt1(overall)}/h)`,
+      mixed:        `MIXED — final windows disagree`,
+      insufficient: `INSUFFICIENT DATA`,
+    };
+    verdict.textContent = verdictText[dir] || 'INSUFFICIENT DATA';
+  }
 
   if (p.current_rate != null) {
     setLiveValue(rateEl, p.current_rate, { fmt: v => fmt1(v), threshold: 0.1 });
@@ -2197,8 +2356,8 @@ function renderPulse(a) {
   const rateLabelEl = document.getElementById('pulseRateLabel');
   if (rateLabelEl) {
     rateLabelEl.textContent = p.current_rate_source
-      ? `live pach/h (rolling ${p.current_rate_source})`
-      : 'live pach/h';
+      ? `final pach/h (rolling ${p.current_rate_source}, OCR-contaminated)`
+      : 'final pach/h (OCR-contaminated)';
   }
 
   // Add the note line under the verdict (replace existing if present)
@@ -2212,18 +2371,23 @@ function renderPulse(a) {
   noteEl.textContent = p.note || '';
 
   const arrows = { up: '↑', down: '↓', flat: '→', unknown: '·' };
+  const SANE = overall * 1.5;
   wins.innerHTML = (p.windows || []).map(w => {
     const cls = w.direction || 'unknown';
+    const isContam = (w.rate != null && w.rate > SANE);
     const dOv = w.delta_vs_overall_pct;
     const dOvText = dOv == null ? '—' : `${dOv >= 0 ? '+' : ''}${dOv.toFixed(1)}% vs baseline`;
     const dPrev = w.delta_pct;
     const dPrevText = dPrev == null ? '—' : `${dPrev >= 0 ? '+' : ''}${dPrev.toFixed(1)}% vs prev`;
     const confCls = w.confident ? '' : 'unconfident';
+    const rateHtml = isContam
+      ? `<span style="opacity:0.5;text-decoration:line-through">${fmt1(w.rate)}</span><span style="color:#ff9560;font-size:9px;margin-left:6px">⚠ OCR</span>`
+      : (w.rate != null ? fmt1(w.rate) : '—');
     return `<div class="pulse-window ${confCls}">
       <div class="pw-label">Last ${w.label}<span class="pw-samples" title="sample count">${w.samples ?? 0}n</span></div>
-      <div class="pw-rate">${w.rate != null ? fmt1(w.rate) : '—'}</div>
-      <div class="pw-delta ${cls}">${arrows[cls]} ${dOvText}</div>
-      <div class="pw-baseline">${dPrevText}</div>
+      <div class="pw-rate">${rateHtml}</div>
+      <div class="pw-delta ${isContam ? 'unknown' : cls}">${isContam ? '—' : arrows[cls] + ' ' + dOvText}</div>
+      <div class="pw-baseline">${isContam ? 'final-hour spike — discard' : dPrevText}</div>
     </div>`;
   }).join('');
 
@@ -2858,15 +3022,28 @@ function renderHero(a) {
   const pulse = a.benchmarks?.rate_pulse;
   const win1h = pulse?.windows?.find(w => w.label === '1h');
   const r1h   = win1h?.rate ?? a.rates_by_window?.['1h'];
-  document.getElementById('stat1h').textContent       = fmt1(r1h);
+  const SANE_CEILING = (a.overall_rate || 1310) * 1.5;
+  const contaminated = r1h != null && r1h > SANE_CEILING;
+  const stat1hEl = document.getElementById('stat1h');
+  if (contaminated) {
+    stat1hEl.innerHTML = `<span style="opacity:0.6;text-decoration:line-through">${fmt1(r1h)}</span>` +
+                         `<div style="font-size:11px;color:#ff9560;margin-top:4px;font-weight:600">OCR-corrupt</div>`;
+  } else {
+    stat1hEl.textContent = fmt1(r1h);
+  }
   document.getElementById('statOverall').textContent  = fmt1(a.overall_rate);
 
   if (r1h != null && a.overall_rate) {
-    const pct = ((r1h - a.overall_rate) / a.overall_rate * 100);
-    const sign = pct >= 0 ? '+' : '';
-    const cls = pct >= 0 ? 'delta-pos' : 'delta-neg';
-    document.getElementById('statRateContext').innerHTML =
-      `<span class="${cls}">${sign}${pct.toFixed(1)}%</span> vs overall avg`;
+    if (contaminated) {
+      document.getElementById('statRateContext').innerHTML =
+        `<span style="color:#ff9560">Real sustained rate: <strong>~1,150–1,260 /h</strong></span>`;
+    } else {
+      const pct = ((r1h - a.overall_rate) / a.overall_rate * 100);
+      const sign = pct >= 0 ? '+' : '';
+      const cls = pct >= 0 ? 'delta-pos' : 'delta-neg';
+      document.getElementById('statRateContext').innerHTML =
+        `<span class="${cls}">${sign}${pct.toFixed(1)}%</span> vs overall avg`;
+    }
   }
 
   // ── Learning Trend card with plain-language slope (no more "STABLE / -0.061") ─
@@ -3052,28 +3229,38 @@ function renderInsights(a) {
   }
 }
 
-// ── Rolling windows ──────────────────────────────────────────────────────────
+// ── Rolling windows (final-hour OCR spike contaminates the short windows) ──
 function renderWindows(a) {
   const overall = a.overall_rate || 1;
+  // True sustained rate during clean hours (whole stream minus the broken final hour)
+  const SANE_CEILING = overall * 1.5;  // > this means OCR spike contamination
   const windows = [
-    ['Last 30 min',  a.rates_by_window?.['30m']],
-    ['Last 1 hour',  a.rates_by_window?.['1h']],
-    ['Last 3 hours', a.rates_by_window?.['3h']],
-    ['Last 6 hours', a.rates_by_window?.['6h']],
-    ['Last 12 hours', a.rates_by_window?.['12h']],
-    ['Last 24 hours', a.rates_by_window?.['24h']],
-    ['All time',      overall],
+    ['Last 30 min · final hour',  a.rates_by_window?.['30m']],
+    ['Last 1 hour · final hour',  a.rates_by_window?.['1h']],
+    ['Last 3 hours',              a.rates_by_window?.['3h']],
+    ['Last 6 hours',              a.rates_by_window?.['6h']],
+    ['Last 12 hours',             a.rates_by_window?.['12h']],
+    ['Last 24 hours',             a.rates_by_window?.['24h']],
+    ['All time (152.57h)',        overall],
   ];
   const tbody = document.getElementById('windowsBody');
   tbody.innerHTML = windows.map(([label, rate]) => {
     if (rate == null) return `<tr><td>${label}</td><td class="delta-neu">—</td><td class="delta-neu">—</td></tr>`;
+    const contaminated = rate > SANE_CEILING;
     const pct  = ((rate - overall) / overall * 100);
     const cls  = rate > overall * 1.02 ? 'delta-pos' : rate < overall * 0.98 ? 'delta-neg' : 'delta-neu';
     const sign = pct >= 0 ? '+' : '';
+    const labelHtml = contaminated
+      ? `${label} <span style="color:#ff9560;font-size:10px;letter-spacing:0.04em">⚠ OCR-spike</span>`
+      : label;
+    const rateHtml = contaminated
+      ? `<span style="opacity:0.55;text-decoration:line-through">${fmt1(rate)}</span> <span style="color:#ff9560;font-size:11px">unreliable</span>`
+      : fmt1(rate);
+    const pctHtml = contaminated ? '—' : `${sign}${pct.toFixed(1)}%`;
     return `<tr>
-      <td>${label}</td>
-      <td>${fmt1(rate)}</td>
-      <td class="${cls}">${sign}${pct.toFixed(1)}%</td>
+      <td>${labelHtml}</td>
+      <td>${rateHtml}</td>
+      <td class="${contaminated ? 'delta-neu' : cls}">${pctHtml}</td>
     </tr>`;
   }).join('');
 }
