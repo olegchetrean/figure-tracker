@@ -628,7 +628,7 @@ const SOURCE_DESCRIPTIONS = {
 // ── Fetch loop ───────────────────────────────────────────────────────────────
 async function fetchAudit() {
   try {
-    const res = await fetch('/api/audit');
+    const res = await fetch('data/audit.json');
     if (res.status === 404 || !res.ok) {
       handleOffline(res.status === 404 ? '404 — endpoint not deployed' : `HTTP ${res.status}`);
       return;

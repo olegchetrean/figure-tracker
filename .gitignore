@@ -7,8 +7,9 @@
 *credentials*
 youtube_cookies.txt
 
-# Databases (server-only)
+# Databases (server-only) — frontend/data/ is the static archive snapshot, keep it
 data/
+!frontend/data/
 *.db
 *.db-journal
 *.sqlite

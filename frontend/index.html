@@ -1994,8 +1994,8 @@ let mainChart = null;
 async function fetchAll() {
   try {
     const [aRes, rRes] = await Promise.all([
-      fetch('/api/analysis'),
-      fetch('/api/report'),
+      fetch('data/analysis.json'),
+      fetch('data/report.json'),
     ]);
     analysisData = await aRes.json();
     const reportData = await rRes.json();
@@ -2014,9 +2014,9 @@ async function fetchAll() {
     renderPatterns(analysisData);
     renderRobots(analysisData);
 
-    fetch('/api/news').then(r => r.json()).then(renderNews).catch(()=>{});
-    fetch('/api/costs').then(r => r.json()).then(renderCosts).catch(()=>{});
-    fetch('/api/events?limit=30').then(r => r.json()).then(renderEvents).catch(()=>{});
+    fetch('data/news.json').then(r => r.json()).then(renderNews).catch(()=>{});
+    fetch('data/costs.json').then(r => r.json()).then(renderCosts).catch(()=>{});
+    fetch('data/events.json').then(r => r.json()).then(renderEvents).catch(()=>{});
     renderChart(analysisData, chartView);
     renderInsights(analysisData);
     renderWindows(analysisData);
